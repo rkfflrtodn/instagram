@@ -35,7 +35,7 @@ class Comment(models.Model):
     )
 
     content = models.TextField(
-        '콘텐츠',
+        '댓글 내용',
     )
     tags = models.ManyToManyField(
         'HashTag',
@@ -54,9 +54,9 @@ class HashTag(models.Model):
         max_length=100
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = '해쉬태그'
         verbose_name_plural = f'{verbose_name} 목록'
-
-    def __str__(self):
-        return self.name

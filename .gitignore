@@ -1,3 +1,7 @@
+# Media (Store User-uploaded files)
+/.media
+
+
 # Crawler temp data
 /crawler/saved_data
 
