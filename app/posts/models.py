@@ -34,7 +34,9 @@ class Comment(models.Model):
         verbose_name='작성자',
     )
 
-    content = models.TextField()
+    content = models.TextField(
+        '콘텐츠',
+    )
     tags = models.ManyToManyField(
         'HashTag',
         blank=True,
