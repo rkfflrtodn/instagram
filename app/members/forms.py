@@ -2,9 +2,10 @@ from django import forms
 
 
 class LoginForm(forms.Form):
-    # username, password를 받을 수 있도록 함
-    # password는 widget에 PasswordInput을 사용하기
     username = forms.CharField(
+        # 일반 input[type=text]
+        # form-control CSS클래스 사용
+        #  (Bootstrap규칙)
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -12,6 +13,33 @@ class LoginForm(forms.Form):
         )
     )
     password = forms.CharField(
+        # input[type=password]
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+
+
+class SignupForm(forms.Form):
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    password1 = forms.CharField(
+        # input[type=password]
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    password2 = forms.CharField(
+        # input[type=password]
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
