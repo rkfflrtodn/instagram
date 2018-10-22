@@ -2,15 +2,28 @@
 
 {% block content %}
 <div>
-    <h2>포스트 추가</h2>
-    <form action="" enctype="multipart/form-data" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <button class="btn btn-primary btn-block">업로드</button>
-    </form>
+	<h2>포스트 추가</h2>
+	<form action=""
+	      enctype="multipart/form-data"
+	      method="POST">
+		{% csrf_token %}
+		{% for field in form %}
+		<div class="form-group">
+			<label for="{{ field.id_for_label }}">
+				{{ field.label }}
+			</label>
+			{{ field }}
+		</div>
+		{% endfor %}
+		<button class="btn btn-primary btn-block">업로드</button>
+	</form>
 </div>
-<!--<div class="form-group">-->
-    <!--<label for="id-photo">사진 업로드</label>-->
-    <!--<input type="file" id="id-photo" name="photo" class="form-control-file">-->
-<!--</div>-->
 {% endblock %}
+
+<div class="form-group">
+	<label for="id-photo">사진 첨부</label>
+	<input type="file"
+	       id="id-photo"
+	       name="photo"
+	       class="form-control-file">
+</div>
