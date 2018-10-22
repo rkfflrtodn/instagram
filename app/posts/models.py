@@ -65,3 +65,9 @@ class HashTag(models.Model):
     class Meta:
         verbose_name = '해쉬태그'
         verbose_name_plural = f'{verbose_name} 목록'
+
+
+
+class UploadFileModel(models.Model):
+    title = models.TextField(default='')
+    file = models.FileField(null=True)
