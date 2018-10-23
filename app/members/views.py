@@ -99,48 +99,30 @@ def signup_view(request):
     #  base.html에 있는 'Signup'버튼이 이 쪽으로
     #  이동할 수 있도록 url 링크걸기
 
-    context = {
-        'form': SignupForm(),
-    }
-
+    context = {}
+    # Django의 Form
+    # 1. HTML위젯 생성
+    # 2. 요청(request)으로부터 데이터를 받는 역할
+    # 3. 받아온 데이터를 유효성 검증
+    # 4. 유효성 검증에 실패한 원인을 출력
     if request.method == 'POST':
-        # 1. request.POST에 전달된 username, password1, password2를
-        #    각각 해당 이름의 변수에 할당
-        # 2-x에서는 HttpResponse에 문자열로 에러를 리턴해주기
-        #  2-1. username에 해당하는 User가 이미 있다면
-        #       사용자명 ({username})은 이미 사용중입니다.
-        #  2-2. password1과 password2가 일치하지 않는다면
-        #       비밀번호와 비밀번호 확인란의 값이 일치하지 않습니다.
-        # 3. 위의 두 경우가 아니라면
-        #    새 User를 생성, 해당 User로 로그인 시켜준 후 'posts:post-list'로 redirect처리
-        # # # # # # # # # # # # # # # # # # # #
-        # Django의 Form
-        # 1. HTML위젯 생성
-        # 2. 요청(request)으로부터 데이터를 받는 역할
-        # 3. 받아온 데이터를 유효성 검증
-        # 4. 유효성 검증에 실패한 원인을 출력
-
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-
-        # render하는 경우
-        #   1.사용자명이 이미 존재할 경우
-        #   2.비밀번호가 같지 않은 경우
-        #   3.GET요청인 경우
-        # redirect하는 경우
-        #   1.POST요청이며 사용자명이 존재하지 않고 비밀번호가 같은 경우
-
-        if User.objects.filter(username=username).exists():
-            context['error'] = f'사용자명({username})은 이미 사용중입니다.'
-        elif password1 != password2:
-            context['error'] = '비밀번호와 비밀번호 확인란의 값이 일치하지 않습니다.'
-        else:
-        # create_user메서드는 create와 달리 자동으로 password해싱을 해줌
+        # POST로 전달된 데이터를 확인
+        # 올바르다면 User를 생성하고 post-list화면으로 이동
+        # (is_valid()가 True면 올바르다고 가정)
+        form = SignupForm(request.POST)
+        if form.is_valid():
             user = User.objects.create_user(
-                username=username,
-                password=password1,
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password1'],
             )
             login(request, user)
             return redirect('posts:post-list')
+    else:
+        form = SignupForm()
+    # GET 요청시 또는 POST로 전달된 데이터가 올바르지 않을 경우
+    # signup.html에
+    # 빈 Form 또는 올바르지 않은 데이터에 대한 정보가 포함된 Form을 전달해서
+    # 동적으로 form 렌더링
+    # return render(request, 'members/signup.html', context)
+    context['form'] = form
     return render(request, 'members/signup.html', context)
