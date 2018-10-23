@@ -1,6 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
 
 from .forms import LoginForm, SignupForm
@@ -39,6 +37,11 @@ def login_view(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             login(request, form.user)
+            # GET parameter에 'next'가 전달되었다면
+            #  해당 키의 값으로 redirect
+            next_path = request.GET.get('next')
+            if next_path:
+                return redirect(next_path)
             return redirect('posts:post-list')
     else:
         form = LoginForm()

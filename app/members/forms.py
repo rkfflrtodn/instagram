@@ -29,7 +29,9 @@ class LoginForm(forms.Form):
         )
     )
 
+
     def clean(self):
+        super().clean()
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
         user = authenticate(username=username, password=password)
