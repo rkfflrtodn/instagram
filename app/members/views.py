@@ -113,6 +113,13 @@ def signup_view(request):
         #       비밀번호와 비밀번호 확인란의 값이 일치하지 않습니다.
         # 3. 위의 두 경우가 아니라면
         #    새 User를 생성, 해당 User로 로그인 시켜준 후 'posts:post-list'로 redirect처리
+        # # # # # # # # # # # # # # # # # # # #
+        # Django의 Form
+        # 1. HTML위젯 생성
+        # 2. 요청(request)으로부터 데이터를 받는 역할
+        # 3. 받아온 데이터를 유효성 검증
+        # 4. 유효성 검증에 실패한 원인을 출력
+
         username = request.POST['username']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
