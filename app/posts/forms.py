@@ -1,7 +1,7 @@
 
 from django import forms
 
-from .models import Post
+from .models import Post, Comment
 
 
 class PostCreateForm(forms.Form):
@@ -50,3 +50,22 @@ class PostCreateForm(forms.Form):
 
         # 2. post_list에서 각 Post의 댓글 목록을 출력
         return post
+
+
+class CommentCreateForm(forms.Form):
+    content = forms.CharField(
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'rows': 2,
+            }
+        ),
+    )
+
+    def save(self, post, **kwargs):
+        content = self.cleaned_data['content']
+        return post.comments.create(
+            content=content,
+            **kwargs,
+        )

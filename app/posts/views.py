@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 
-from .models import Post
-from .forms import PostCreateForm
+from .models import Post, Comment
+from .forms import PostCreateForm, CommentCreateForm
 
 
 def post_list(request):
@@ -32,8 +32,10 @@ def post_list(request):
     #      결과: localhost:8000/posts/ 로 접근시
     #            이 view가 처리하도록 함
     posts = Post.objects.all()
+    # 적절히 CommentCreateForm을 전달
     context = {
         'posts': posts,
+        'comment_form': CommentCreateForm(),
     }
     return render(request, 'posts/post_list.html', context)
 
@@ -68,8 +70,37 @@ def comment_create(request, post_pk):
     'content'키로 들어온 값을 사용해 댓글 생성, 작성자는 요청한 User
     URL: /posts/<post_pk>/comments/create/
 
+    댓글 생성 완료 후에는 posts:post-list로 redirect
+
     :param request:
     :param post_pk:
     :return:
     """
-    pass
+    # 1. post_pk에는 해당하는 Post객체를 가져와 post변수에 할당
+    # 2. request.POST에 전달된 'content'키의 값을 content변수에 할당
+    # 3. Comment 생성
+    #     author: 현재 요청의 User
+    #     post: post_pk에 해당하는 Post객체
+    #     content: request.POST로 전달된 'content'키의 값
+    # 4. posts:post-list로 redirect하기
+    context = {}
+    if request.method == 'POST':
+        post = Post.objects.get(pk=post_pk)
+        # posts.forms.CommentCreateForm()을 사용
+
+        form = CommentCreateForm(request.POST)
+        if form.is_valid():
+            form.save(
+                post=post,
+                author=request.user,
+            )
+        return redirect('posts:post-list')
+        # content = request.POST['content']
+        # Comment.objects.create(
+        #     author=request.user,
+        #     post=post,
+        #     content=content,
+        # )
+
+    # context['form'] = form
+    # return render(request, 'posts/post_create.html', context)
