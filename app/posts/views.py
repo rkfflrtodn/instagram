@@ -59,3 +59,17 @@ def post_create(request):
     context['form'] = form
     return render(request, 'posts/post_create.html', context)
 
+
+def comment_create(request, post_pk):
+    """
+    pos_pk에 해당하는 Post에 댓글을 생성하는 view
+    'POST' 메서드 요청만 처리
+
+    'content'키로 들어온 값을 사용해 댓글 생성, 작성자는 요청한 User
+    URL: /posts/<post_pk>/comments/create/
+
+    :param request:
+    :param post_pk:
+    :return:
+    """
+    pass
