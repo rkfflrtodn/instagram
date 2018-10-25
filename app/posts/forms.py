@@ -69,6 +69,36 @@ class CommentCreateForm(forms.Form):
         )
 
 
+class PostForm(forms.ModelForm):
+    # 1. posts.views.post_create
+    # 2. templates/posts/post_create.html
+    comment = forms.CharField(
+        label='내용',
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'rows': 2,
+            }
+        )
+    )
+
+
+
+    class Meta:
+        model = Post
+        fields = [
+            'photo',
+        ]
+        widgets = {
+            'photo': forms.ClearableFileInput(
+                attrs={
+                    'class': 'form-control-file',
+                }
+            )
+        }
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
