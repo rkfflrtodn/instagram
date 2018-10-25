@@ -1,7 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from .models import Post, Comment
-from .forms import PostCreateForm, CommentCreateForm
+from .forms import PostCreateForm, CommentCreateForm, CommentForm
 
 
 def post_list(request):
@@ -35,11 +36,12 @@ def post_list(request):
     # 적절히 CommentCreateForm을 전달
     context = {
         'posts': posts,
-        'comment_form': CommentCreateForm(),
+        'comment_form': CommentForm(),
     }
     return render(request, 'posts/post_list.html', context)
 
 
+@login_required
 def post_create(request):
     context = {}
     if request.method == 'POST':
@@ -64,43 +66,28 @@ def post_create(request):
 
 def comment_create(request, post_pk):
     """
-    pos_pk에 해당하는 Post에 댓글을 생성하는 view
-    'POST' 메서드 요청만 처리
-
-    'content'키로 들어온 값을 사용해 댓글 생성, 작성자는 요청한 User
+    post_pk에 해당하는 Post에 댓글을 생성하는 view
+    'POST'메서드 요청만 처리
+    'content'키로 들어온 값을 사용해 댓글 생성. 작성자는 요청한 User
     URL: /posts/<post_pk>/comments/create/
-
     댓글 생성 완료 후에는 posts:post-list로 redirect
-
     :param request:
     :param post_pk:
     :return:
     """
-    # 1. post_pk에는 해당하는 Post객체를 가져와 post변수에 할당
+    # 1. post_pk에 해당하는 Post객체를 가져와 post변수에 할당
     # 2. request.POST에 전달된 'content'키의 값을 content변수에 할당
-    # 3. Comment 생성
+    # 3. Comment생성
     #     author: 현재 요청의 User
     #     post: post_pk에 해당하는 Post객체
     #     content: request.POST로 전달된 'content'키의 값
     # 4. posts:post-list로 redirect하기
-    context = {}
     if request.method == 'POST':
         post = Post.objects.get(pk=post_pk)
-        # posts.forms.CommentCreateForm()을 사용
-
-        form = CommentCreateForm(request.POST)
+        form = CommentForm(request.POST)
         if form.is_valid():
-            form.save(
-                post=post,
-                author=request.user,
-            )
-        return redirect('posts:post-list')
-        # content = request.POST['content']
-        # Comment.objects.create(
-        #     author=request.user,
-        #     post=post,
-        #     content=content,
-        # )
-
-    # context['form'] = form
-    # return render(request, 'posts/post_create.html', context)
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect('posts:post-list')

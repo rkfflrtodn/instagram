@@ -1,4 +1,3 @@
-
 from django import forms
 
 from .models import Post, Comment
@@ -54,13 +53,12 @@ class PostCreateForm(forms.Form):
 
 class CommentCreateForm(forms.Form):
     content = forms.CharField(
-        required=True,
         widget=forms.Textarea(
             attrs={
                 'class': 'form-control',
                 'rows': 2,
             }
-        ),
+        )
     )
 
     def save(self, post, **kwargs):
@@ -69,3 +67,19 @@ class CommentCreateForm(forms.Form):
             content=content,
             **kwargs,
         )
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = [
+            'content',
+        ]
+        widgets = {
+            'content': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 2,
+                }
+            )
+        }
