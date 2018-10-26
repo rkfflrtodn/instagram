@@ -1,10 +1,8 @@
-import re
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from .models import Post, Comment, HashTag
-from .forms import PostCreateForm, CommentCreateForm, CommentForm, PostForm
+from .forms import CommentForm, PostForm
+from .models import Post
 
 
 def post_list(request):
@@ -54,24 +52,23 @@ def post_create(request):
         # 완료된 후 posts:post-list로 redirect
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            # post = form.save(author=request.user)
             post = form.save(commit=False)
             post.author = request.user
             post.save()
 
             # PostForm에 'comment'값이 전달되었다면
-            # 위에서 생성한 Post에 연결되는 Comment생성
+            # 위에서 만든 Post와 연결되는 Comment를 생성
             comment_content = form.cleaned_data['comment']
             if comment_content:
                 post.comments.create(
                     author=request.user,
-                    content=form.cleaned_data['comment'],
+                    content=comment_content,
                 )
             return redirect('posts:post-list')
     else:
         # GET요청의 경우, 빈 Form인스턴스를 context에 담아서 전달
         # Template에서는 'form'키로 해당 Form인스턴스 속성을 사용 가능
-        form = PostCreateForm()
+        form = PostForm()
 
     context['form'] = form
     return render(request, 'posts/post_create.html', context)
@@ -103,17 +100,14 @@ def comment_create(request, post_pk):
             comment.post = post
             comment.author = request.user
             comment.save()
-
-
-            p = re.compile(r'#(?P<tag>\w+)')
-
-            # 댓글 저장 후, content에 포함된 HashTag목록을 댓글의 tags속성에 set
-            tags = [HashTag.objects.get_or_create(name=name)[0]
-                    for name in re.findall(p,comment.content)]
-            comment.tags.set(tags)
             return redirect('posts:post-list')
 
+
 def tag_post_list(request, tag_name):
+    # Post중, 자신에게 속한 Comment가 가진 HashTag목록 중 tag_name이 name인 HashTag가 포함된
+    #  Post목록을 posts변수에 할당
+    #  context에 담아서 리턴 render
+    # HTML: /posts/tag_post_list.html
     posts = Post.objects.filter(
         comments__tags__name=tag_name)
     context = {

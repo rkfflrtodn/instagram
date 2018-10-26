@@ -11,6 +11,21 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
 	<title>Instagram</title>
+	<style>
+		.square {
+		}
+		.square:before {
+			content: '';
+			padding: 50% 0;
+			display: inline-block;
+		}
+		.square > .thumbnail {
+			display: block;
+			width: 100%;
+			background-size: cover;
+			background-position: center center;
+		}
+	</style>
 </head>
 <body>
 	<div id="wrap">
@@ -55,10 +70,12 @@
 				</li>
 				{% else %}
 				<li class="nav-item mr-sm-1">
-					<a href="{% url 'members:login' %}" class="btn btn-outline-secondary">Login</a>
+					<a href="{% url 'members:login' %}"
+					   class="btn btn-outline-secondary">Login</a>
 				</li>
 				<li class="nav-item">
-					<a href="{% url 'members:signup' %}" class="btn btn-outline-secondary">Signup</a>
+					<a href="{% url 'members:signup' %}"
+					   class="btn btn-outline-secondary">Signup</a>
 				</li>
 				{% endif %}
 			</ul>

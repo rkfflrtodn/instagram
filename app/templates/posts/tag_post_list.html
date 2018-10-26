@@ -1,16 +1,17 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div>
-    {% for post in posts %}
-      <div class="col">
-          <a href="" class="thumbnail">
-              <div class="image">
-                  <img src="{{ post.photo.url }}" class="img img-responsive">
-              </div>
-          </a>
-      </div>
-    {% endfor %}
+<div class="row">
+	{% for post in posts %}
+		<div class="col-4">
+			<div class="row square">
+				<a href="#"
+				   class="thumbnail"
+				   style="background-image: url('{{ post.photo.url}}');"
+				></a>
+			</div>
+		</div>
+	{% endfor %}
 </div>
 {% endblock %}
