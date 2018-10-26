@@ -112,3 +112,11 @@ def comment_create(request, post_pk):
                     for name in re.findall(p,comment.content)]
             comment.tags.set(tags)
             return redirect('posts:post-list')
+
+def tag_post_list(request, tag_name):
+    posts = Post.objects.filter(
+        comments__tags__name=tag_name)
+    context = {
+        'posts': posts,
+    }
+    return render(request, 'posts/tag_post_list.html', context)
