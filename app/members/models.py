@@ -16,6 +16,9 @@ class User(AbstractUser):
     )
     introduce = models.TextField('소개', blank=True)
 
+
+
+
     def __str__(self):
         return self.username
 
@@ -31,3 +34,7 @@ class User(AbstractUser):
             return self.img_profile.url
         # 없다면 static폴더에서 뒷 경로 파일의 url을 리턴
         return static('images/blank_user.png')
+
+    def like_post_toggle(self, post):
+        # 전달받은 post에 대한 Like를 Toggle처리
+        pass

@@ -1,10 +1,10 @@
 import re
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import CommentForm, PostForm
-from .models import Post
+from .models import Post, PostLike
 
 
 def post_list(request):
@@ -120,12 +120,39 @@ def tag_post_list(request, tag_name):
 
 def tag_search(request):
     # request.GET으로 전달된
-    # search_keyword값을 적절히 활용해서
-    # 위의 tag_post_list view로 redirect
+    #  search_keyword값을 적절히 활용해서
+    #  위의 tag_post_list view로 redirect
     # URL: '/posts/tag-search/'
     # URL Name: 'posts:tag-search'
     # Template: 없음
     search_keyword = request.GET.get('search_keyword')
     substituted_keyword = re.sub(r'#|\s+', '', search_keyword)
     return redirect('tag-post-list', substituted_keyword)
-    pass
+
+@login_required
+def post_like_toggle(request, post_pk):
+    # URL: '/posts/<post_pk>/like-toggle/
+    # URL Name: 'posts:post-like-toggle'
+    # POST method에 대해서만 처리
+
+    # request.user가 post_pk에 해당하는 Post에
+    #  Like Toggle처리
+    #############################
+
+    if request.method == 'POST':
+        post = Post.objects.get(pk=post_pk)
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            filtered_like_posts = form.like_posts.filter(pk=post.pk)
+
+            if filtered_like_posts.exists():
+                post = form.save(commit=False)
+                post.like_users = request.user
+                post.delete()
+            else:
+                post = form.save(commit=False)
+                post.like_users = request.user
+                post.save()
+
+
+    return redirect('posts:post-list')
