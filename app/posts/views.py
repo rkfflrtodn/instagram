@@ -2,6 +2,7 @@ import re
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
 from .forms import CommentForm, PostForm
 from .models import Post, PostLike
@@ -129,7 +130,7 @@ def tag_search(request):
     substituted_keyword = re.sub(r'#|\s+', '', search_keyword)
     return redirect('tag-post-list', substituted_keyword)
 
-@login_required
+
 def post_like_toggle(request, post_pk):
     # URL: '/posts/<post_pk>/like-toggle/
     # URL Name: 'posts:post-like-toggle'
@@ -140,19 +141,7 @@ def post_like_toggle(request, post_pk):
     #############################
 
     if request.method == 'POST':
-        post = Post.objects.get(pk=post_pk)
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            filtered_like_posts = form.like_posts.filter(pk=post.pk)
-
-            if filtered_like_posts.exists():
-                post = form.save(commit=False)
-                post.like_users = request.user
-                post.delete()
-            else:
-                post = form.save(commit=False)
-                post.like_users = request.user
-                post.save()
-
-
-    return redirect('posts:post-list')
+        post = get_object_or_404(Post, pk=post_pk)
+        post.like_toggle(request.user)
+        url = reverse('posts:post-list')
+        return redirect(url + f'#post-{post_pk}')
