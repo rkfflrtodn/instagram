@@ -10,6 +10,8 @@ import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.contrib import messages
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
@@ -30,14 +32,13 @@ STATICFILES_DIRS = [
 
 # .secrets/base.json에 있는 내용을 읽어서
 # parsing하여 파이썬 dict객체를 가져와 secrets변수에 할당
-secrets = json.load(open(os.path.join(SECRETS_DIR, 'base.join')))
+secrets = json.load(open(os.path.join(SECRETS_DIR, 'base.json')))
 FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
 FACEBOOK_APP_SECRET = secrets['FACEBOOK_APP_SECRET']
 
-
 # login_required 데코레이터에 의해
 # 로그인 페이지로 이동해야 할 때,
-# 그 이동할 URL또는 URL pattern name
+#  그 이동할 URL또는 URL pattern name
 LOGIN_URL = 'members:login'
 # authenticate() 함수 호출 시 사용할 백엔드 목록
 AUTHENTICATION_BACKENDS = [
@@ -58,8 +59,6 @@ ALLOWED_HOSTS = []
 
 # Auth
 AUTH_USER_MODEL = 'members.User'
-
-# Application definition
 
 INSTALLED_APPS = [
     # AppConfig클래스를 사용
@@ -88,6 +87,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+# 템플릿에서 message.tags에 사용될 값 커스터마이징
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -108,7 +111,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -118,7 +120,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -137,7 +138,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
