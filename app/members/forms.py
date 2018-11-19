@@ -1,14 +1,16 @@
 from django import forms
 from django.contrib.auth import authenticate, get_user_model
+
 # from django.contrib.auth.models import User
 # from members.models import User
 # 1. 사용자 모델 클래스에 대한 참조가 필요할 때
-#   get_user_model()함수를 사용
+#  get_user_model() 함수를 사용
 #   -> settings.AUTH_USER_MODEL의 값을 사용해서 사용자 모델 클래스를 반환
 # 2. 사용자 모델 클래스에 대한 관계를 설정할 때
-# 관계필드(ForeignKey, ManyToMany, OneToOne)의 관계부분에
-# settings.AUTH_USER_MODEL(문자열)을 사용
+#  관계필드(ForeignKey, ManyToMany, OneToOne)의 관계부분에
+#  settings.AUTH_USER_MODEL(문자열)을 사용
 User = get_user_model()
+
 
 class LoginForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -35,7 +37,6 @@ class LoginForm(forms.Form):
             }
         )
     )
-
 
     def clean(self):
         super().clean()
@@ -120,3 +121,35 @@ class UserProfileForm(forms.ModelForm):
             'site',
             'introduce',
         ]
+        widgets = {
+            'email': forms.EmailInput(
+                attrs={
+                    'class': 'form-control',
+                },
+            ),
+            'last_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+            'first_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+            'img_profile': forms.ClearableFileInput(
+                attrs={
+                    'class': 'form-control-file',
+                }
+            ),
+            'site': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+            'introduce': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                }
+            )
+        }
