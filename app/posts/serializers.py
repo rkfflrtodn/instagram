@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
+from members.serializers import UserSerializer
 from .models import Post, PostLike
 
 
 class PostSerializer(serializers.ModelSerializer):
+    author = UserSerializer()
     is_like = serializers.SerializerMethodField()
 
     class Meta:
