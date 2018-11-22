@@ -1,3 +1,4 @@
+
 """config URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -48,6 +49,7 @@ urlpatterns_api = ([
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', views.index, name='index'),
+
     path('', RedirectView.as_view(pattern_name='posts:post-list'), name='index'),
     # /posts/로 들어오는 URL은 posts.urls모듈에서 처리
     path('posts/', include('posts.urls')),
@@ -64,3 +66,8 @@ urlpatterns += static(
     prefix=settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT,
 )
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
